@@ -10,9 +10,15 @@
 <body>
     <h1>Helloooooooo</h1>
     <p id="state_display">The current timer state is: {{timer_state}}</p>
-    <button id="change-state-button">Change State</button>
-    <p id ="counter_display"></p>
-    <input type="number" id="work-minutes-input" value="25">
+    <!-- <button id="change-state-button">Change State</button> -->
+    <p id ="count_display"></p>
+    <input type="number" id="work-min-input">
+    <input type="number" id="break-min-input">
+    <input type="number" id="long-break-min-input">
+    <input type="number" id="break-cycles-input">
+    <button id="start-button">Start</button>
+    <button id="pause-button">Pause</button>
+    <button id="stop-button">Stop</button>
     <button id="settings-button">Save Settings</button>
     <script src="{{ url_for('static', filename='js/script.js') }}"></script>
 </body>

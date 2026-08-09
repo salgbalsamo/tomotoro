@@ -28,5 +28,20 @@ class PomodoroTimer:
             self.state = "work"
         return self.state
 
+    def current_state_duration(self):
+        if self.state == "work":
+            return self.work_min
+        elif self.state == "break":
+            return self.break_min
+        elif self.state == "long_break":
+            return self.long_break_min
+
     def to_dict(self):
-        return {}
+        return {
+            "state": self.state,
+            "work_min": self.work_min,
+            "break_min": self.break_min,
+            "long_break_min": self.long_break_min,
+            "cycles_before_long_break": self.cycles_to_long_break,
+            "current_state_min": self.current_state_duration()
+            }
