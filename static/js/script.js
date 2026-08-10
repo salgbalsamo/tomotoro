@@ -6,10 +6,11 @@ let waitingForResponse = false;
 let startPressed = false;
 let pausePressed = false;
 
+document.getElementById("start-button").disabled = true // disable the start button until settings are set
 document.getElementById("stop-button").disabled = true; // disable the stop button initially
 document.getElementById("pause-button").disabled = true; // disable the pause button initially
 
-fetch("/api/get_settings") // initialize the input fields with the current settings from the server and set the initial countdown value
+fetch("/api/get-settings") // initialize the input fields with the current settings from the server and set the initial countdown value
     .then(function(response) {
         return response.json();
     })
@@ -31,7 +32,7 @@ setInterval(function() {
     if (count < 0) {
         waitingForResponse = true; // pause ticking until fetch finishes
         
-        fetch("/api/next_state")
+        fetch("/api/next-state")
             .then(function(response) {
                 return response.json();
             })
@@ -48,14 +49,22 @@ setInterval(function() {
 
 document.getElementById("start-button").addEventListener("click", function() {
     startPressed = true;
-    document.getElementById("start-button").disabled = true; // disable the button after it's clicked
-    document.getElementById("stop-button").disabled = false; // enable the stop button
-    document.getElementById("pause-button").disabled = false; // enable the pause button
+    document.getElementById("start-button").disabled = true;
+    document.getElementById("stop-button").disabled = false;
+    document.getElementById("pause-button").disabled = false;
+    document.getElementById("settings-button").disabled = true;
+    document.querySelectorAll("#timer-settings input").forEach(function(input) {
+        input.disabled = true;
+    });
+    document.getElementById("playlist-select").disabled = true;
+
+    fetch("/api/play-music", {method: "POST"});
 });
 
 document.getElementById("pause-button").addEventListener("click", function() {
     pausePressed = !pausePressed; // toggle the pause state
     document.getElementById("pause-button").textContent = pausePressed ? "Resume" : "Pause"; // change button text based on state
+    fetch("/api/toggle-music", {method: "POST"});
 });
 
 document.getElementById("stop-button").addEventListener("click", function() {
@@ -63,10 +72,16 @@ document.getElementById("stop-button").addEventListener("click", function() {
     document.getElementById("start-button").disabled = false;
     document.getElementById("stop-button").disabled = true;
     document.getElementById("pause-button").disabled = true;
+    document.getElementById("settings-button").disabled = false;
+    document.querySelectorAll("#timer-settings input").forEach(function(input) {
+        input.disabled = false;
+    });
+    document.getElementById("playlist-select").disabled = false;
+    fetch("api/stop-music", {method: "POST"});
 });
 
 // document.getElementById("change-state-button").addEventListener("click", function() {
-//     fetch("/api/next_state")
+//     fetch("/api/next-state")
 //         .then(function(response) {
 //             return response.text();
 //         })
@@ -77,27 +92,25 @@ document.getElementById("stop-button").addEventListener("click", function() {
 
 document.getElementById("settings-button").addEventListener("click", function() {
     startPressed = false; // stop the timer when settings are changed
-    document.getElementById("start-button").disabled = false; // disable the button after it's clicked
-    document.getElementById("stop-button").disabled = true; // enable the stop button
-    document.getElementById("pause-button").disabled = true; // enable the pause button
+    document.getElementById("start-button").disabled = false;
+    document.getElementById("stop-button").disabled = true; 
+    document.getElementById("pause-button").disabled = true; 
 
     const workMin = document.getElementById("work-min-input").value;
     const breakMin = document.getElementById("break-min-input").value;
     const longBreakMin = document.getElementById("long-break-min-input").value;
     const cyclesToLongBreak = document.getElementById("break-cycles-input").value;
+    const playlistName = document.getElementById("playlist-select").value
 
     waitingForResponse = true;
 
-    fetch("/api/set_settings", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
+    fetch("/api/set-settings", {method: "POST",headers: {"Content-Type": "application/json"},
         body: JSON.stringify({
             work_min: workMin,
             break_min: breakMin, 
             long_break_min: longBreakMin,
-            cycles_before_long_break: cyclesToLongBreak})
+            cycles_before_long_break: cyclesToLongBreak,
+            playlist_name: playlistName})
     })
         .then(function(response) {
             return response.json();
@@ -108,3 +121,20 @@ document.getElementById("settings-button").addEventListener("click", function() 
             waitingForResponse = false; //resume ticking
         });
 });
+
+fetch("/api/get-playlists")
+    .then(function(response) {
+        return response.json();
+    })
+    .then(function(data) {
+        const select = document.getElementById("playlist-select");
+
+        for (const name in data) {
+            const option = document.createElement("option");
+            option.value = data[name];
+            option.textContent = name;
+            select.appendChild(option);
+        }
+});
+
+// fetch("/api.set-playlist")

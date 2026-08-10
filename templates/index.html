@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html>
 <html>
 
@@ -8,18 +6,43 @@
 </head>
 
 <body>
-    <h1>Helloooooooo</h1>
+    <h1>POMODORO TIMER</h1>
     <p id="state_display">The current timer state is: {{timer_state}}</p>
     <!-- <button id="change-state-button">Change State</button> -->
     <p id ="count_display"></p>
-    <input type="number" id="work-min-input">
-    <input type="number" id="break-min-input">
-    <input type="number" id="long-break-min-input">
-    <input type="number" id="break-cycles-input">
+
+    <div id="timer-settings">
+        <div id="work-min-setting">
+            <label for="work-min-input">Work Minutes:</label>
+            <input type="number" id="work-min-input">
+        </div>
+        <div id="break-min-setting">
+            <label for="break-min-input">Break Minutes:</label>
+            <input type="number" id="break-min-input">
+        </div>
+        <div id="long-break-min-setting">
+            <label for="long-break-min-input">Long Break Minutes:</label>
+            <input type="number" id="long-break-min-input">
+        </div>
+        <div id="break-cycles-setting">
+            <label for="break-cycles-input">Break Cycles:</label>
+            <input type="number" id="break-cycles-input">
+        </div>
+    </div>
+    
+    <br><br>
+
     <button id="start-button">Start</button>
     <button id="pause-button">Pause</button>
     <button id="stop-button">Stop</button>
     <button id="settings-button">Save Settings</button>
     <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+
+    <div id="music-settings">
+        <div id="playlist-setting">
+            <label for="playlist-select">Playlist:</label>
+            <select id="playlist-select"></select>
+        </div>
+    </div>
 </body>
 </html>
