@@ -3,13 +3,23 @@
 
 <head>
     <title>TomoToro</title>
+    <style>
+        body {
+            display: grid;
+            place-items: center;
+            align-content: center;
+            min-height: 100vh;
+            margin: 0;
+            text-align: center;
+        }
+    </style>
 </head>
 
 <body>
     <h1>POMODORO TIMER</h1>
-    <p id="state_display">The current timer state is: {{timer_state}}</p>
+    <p id="state-display">The current timer state is: {{timer_state}}</p>
     <!-- <button id="change-state-button">Change State</button> -->
-    <p id ="count_display"></p>
+    <p id ="timer-display"></p>
 
     <div id="timer-settings">
         <div id="work-min-setting">

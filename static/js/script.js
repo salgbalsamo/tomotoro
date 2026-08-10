@@ -10,6 +10,32 @@ document.getElementById("start-button").disabled = true // disable the start but
 document.getElementById("stop-button").disabled = true; // disable the stop button initially
 document.getElementById("pause-button").disabled = true; // disable the pause button initially
 
+function display_time(current_seconds) {
+    if (current_seconds > 59) {
+        seconds = current_seconds % 60;
+        minutes = (current_seconds - seconds) / 60;
+    } 
+    else {
+        seconds = current_seconds;
+        minutes = 0;
+    }
+
+    if (seconds < 10) {
+        if (minutes < 10) {
+            document.getElementById("timer-display").textContent = "0" + minutes + ":0" + seconds;
+        }
+        else {
+            document.getElementById("timer-display").textContent = minutes + ":0" + seconds;
+        }}
+    else {
+        if (minutes < 10) {
+            document.getElementById("timer-display").textContent = "0" + minutes + ":" + seconds;
+        }
+        else {
+            document.getElementById("timer-display").textContent = minutes + ":" + seconds;
+        }}
+    }
+
 fetch("/api/get-settings") // initialize the input fields with the current settings from the server and set the initial countdown value
     .then(function(response) {
         return response.json();
@@ -17,7 +43,7 @@ fetch("/api/get-settings") // initialize the input fields with the current setti
     .then(function(data) {
         document.getElementById("work-min-input").value = data.work_min;
         count = data.work_min * 60; // set initial countdown value based on work_min
-        document.getElementById("count_display").textContent = count;
+        display_time(count);
         document.getElementById("break-min-input").value = data.break_min;
         document.getElementById("long-break-min-input").value = data.long_break_min;
         document.getElementById("break-cycles-input").value = data.cycles_before_long_break;
@@ -37,13 +63,13 @@ setInterval(function() {
                 return response.json();
             })
             .then(function(data) {
-                document.getElementById("state_display").textContent = "The current timer state is: " + data.state;
+                document.getElementById("state-display").textContent = "The current timer state is: " + data.state;
                 count = data.current_state_min * 60; // reset the count to the new state's duration
-                document.getElementById("count_display").textContent = count;
+                display_time(count);
                 waitingForResponse = false; // resume ticking
             });
     }
-    document.getElementById("count_display").textContent = count;
+    display_time(count);
     count--;
 }, 1000);
 
@@ -80,16 +106,6 @@ document.getElementById("stop-button").addEventListener("click", function() {
     fetch("api/stop-music", {method: "POST"});
 });
 
-// document.getElementById("change-state-button").addEventListener("click", function() {
-//     fetch("/api/next-state")
-//         .then(function(response) {
-//             return response.text();
-//         })
-//         .then(function(data) {
-//             document.getElementById("state_display").textContent = "The current timer state is: " + data;
-//         });
-// });
-
 document.getElementById("settings-button").addEventListener("click", function() {
     startPressed = false; // stop the timer when settings are changed
     document.getElementById("start-button").disabled = false;
@@ -117,7 +133,7 @@ document.getElementById("settings-button").addEventListener("click", function() 
         })
         .then(function(data) {
             count = data.current_state_min * 60; // reset the count to the new state's duration
-            document.getElementById("count_display").textContent = count;
+            display_time(count);
             waitingForResponse = false; //resume ticking
         });
 });
