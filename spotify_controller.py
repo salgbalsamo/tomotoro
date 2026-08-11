@@ -46,12 +46,12 @@ def get_playlists_sp():
 def play_playlist(uri):
     sp.start_playback(context_uri=uri)
 
-def toggle_playback():
-    is_playing = sp.current_playback().get("is_playing")
-
-    if is_playing:
+def pause_playback():
+    if sp.current_playback().get("is_playing"):
         sp.pause_playback()
-    else:
+
+def resume_playback():
+    if not sp.current_playback().get("is_playing"):
         sp.start_playback()
 
 def stop_playback():

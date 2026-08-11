@@ -9,6 +9,8 @@ Purpose: Main entry point for the TomoToro application, sets up Flask server and
 from flask import Flask, render_template, request, jsonify, redirect
 from pomodoro_timer import PomodoroTimer
 from spotify_controller import *
+import threading
+import webbrowser
 
 app = Flask(__name__)
 timer = PomodoroTimer()
@@ -47,7 +49,13 @@ def play_music():
 
 @app.route("/api/toggle-music", methods=["POST"])
 def toggle_music():
-    toggle_playback()
+    data = request.get_json()
+    is_paused = data["is_paused"]
+    print(is_paused)
+    if is_paused:
+        pause_playback()
+    else:
+        resume_playback()
     return "Playback toggled"
 
 @app.route("/api/stop-music", methods=["POST"])
@@ -72,5 +80,9 @@ def get_playlists():
 # def set_playlists():
 #     return 
 
+def open_browser():
+    webbrowser.open("http://127.0.0.1:5000")
+
 if __name__ == "__main__":
-    app.run(debug=True)
+    threading.Timer(1.5,open_browser).start()
+    app.run(debug=False,use_reloader=False)

@@ -90,11 +90,18 @@ document.getElementById("start-button").addEventListener("click", function() {
 document.getElementById("pause-button").addEventListener("click", function() {
     pausePressed = !pausePressed; // toggle the pause state
     document.getElementById("pause-button").textContent = pausePressed ? "Resume" : "Pause"; // change button text based on state
-    fetch("/api/toggle-music", {method: "POST"});
+    fetch("/api/toggle-music", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ is_paused: pausePressed })
+    });
 });
 
 document.getElementById("stop-button").addEventListener("click", function() {
     startPressed = false;
+    pausePressed = false;
     document.getElementById("start-button").disabled = false;
     document.getElementById("stop-button").disabled = true;
     document.getElementById("pause-button").disabled = true;
